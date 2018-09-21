@@ -15,6 +15,7 @@
 		CE6AD7002154E4C9008425C1 /* Flickr.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6AD6FD2154E4C9008425C1 /* Flickr.swift */; };
 		CE6AD7012154E4C9008425C1 /* FlickrSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6AD6FE2154E4C9008425C1 /* FlickrSearchResults.swift */; };
 		CE6AD7022154E4C9008425C1 /* FlickrPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6AD6FF2154E4C9008425C1 /* FlickrPhoto.swift */; };
+		CE6AD7042154F1BE008425C1 /* FlickrPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6AD7032154F1BE008425C1 /* FlickrPhotoCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		CE6AD6FD2154E4C9008425C1 /* Flickr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flickr.swift; sourceTree = "<group>"; };
 		CE6AD6FE2154E4C9008425C1 /* FlickrSearchResults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrSearchResults.swift; sourceTree = "<group>"; };
 		CE6AD6FF2154E4C9008425C1 /* FlickrPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrPhoto.swift; sourceTree = "<group>"; };
+		CE6AD7032154F1BE008425C1 /* FlickrPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrPhotoCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 				CE6AD6F12154DF55008425C1 /* LaunchScreen.storyboard */,
 				CE6AD6F42154DF55008425C1 /* Info.plist */,
 				CE6AD6FA2154E1E9008425C1 /* FlickrPhotosViewController.swift */,
+				CE6AD7032154F1BE008425C1 /* FlickrPhotoCell.swift */,
 			);
 			path = CollectionViewExample;
 			sourceTree = "<group>";
@@ -157,6 +160,7 @@
 				CE6AD6E92154DF55008425C1 /* AppDelegate.swift in Sources */,
 				CE6AD7022154E4C9008425C1 /* FlickrPhoto.swift in Sources */,
 				CE6AD7012154E4C9008425C1 /* FlickrSearchResults.swift in Sources */,
+				CE6AD7042154F1BE008425C1 /* FlickrPhotoCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
