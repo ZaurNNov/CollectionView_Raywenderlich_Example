@@ -19,10 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-	
+
+/*
+ new apiKey here:
+ https://www.flickr.com/services/api/explore/flickr.photos.search
+ */
+
+// 7008e88bf93a14a71369ee8d742389c9&format=json&nojsoncallback=1
 import UIKit
 
-let apiKey = "69395f87b7cca0fa75626eec2a6cd45d"
+let apiKey = "7008e88bf93a14a71369ee8d742389c9"
 
 class Flickr {
   
