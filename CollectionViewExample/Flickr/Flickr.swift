@@ -25,10 +25,10 @@
  https://www.flickr.com/services/api/explore/flickr.photos.search
  */
 
-// 7008e88bf93a14a71369ee8d742389c9&format=json&nojsoncallback=1
+// api_key=daf7833e7977bcf4ad7f05c51fadc34d&format=json&nojsoncallback=1
 import UIKit
 
-let apiKey = "7008e88bf93a14a71369ee8d742389c9"
+let apiKey = "daf7833e7977bcf4ad7f05c51fadc34d"
 
 class Flickr {
   

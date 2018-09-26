@@ -33,15 +33,21 @@
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="O3p-BG-lHY">
                                             <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
                                         </imageView>
+                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="aUT-4y-4fh">
+                                            <rect key="frame" x="56.5" y="56.5" width="37" height="37"/>
+                                        </activityIndicatorView>
                                     </subviews>
                                 </view>
                                 <constraints>
                                     <constraint firstItem="O3p-BG-lHY" firstAttribute="leading" secondItem="RJA-pi-mtl" secondAttribute="leading" id="HHI-Hm-QoA"/>
+                                    <constraint firstItem="aUT-4y-4fh" firstAttribute="centerY" secondItem="RJA-pi-mtl" secondAttribute="centerY" id="Up3-iX-XwZ"/>
                                     <constraint firstAttribute="bottom" secondItem="O3p-BG-lHY" secondAttribute="bottom" id="WNw-O2-98Q"/>
                                     <constraint firstAttribute="trailing" secondItem="O3p-BG-lHY" secondAttribute="trailing" id="hWs-fC-PjR"/>
+                                    <constraint firstItem="aUT-4y-4fh" firstAttribute="centerX" secondItem="RJA-pi-mtl" secondAttribute="centerX" id="hvB-As-5Ta"/>
                                     <constraint firstItem="O3p-BG-lHY" firstAttribute="top" secondItem="RJA-pi-mtl" secondAttribute="top" id="rNm-qg-Gk5"/>
                                 </constraints>
                                 <connections>
+                                    <outlet property="activityIndicator" destination="aUT-4y-4fh" id="Miz-MF-OQg"/>
                                     <outlet property="imageView" destination="O3p-BG-lHY" id="yYZ-wK-uyB"/>
                                 </connections>
                             </collectionViewCell>
@@ -83,7 +89,7 @@
                     <navigationItem key="navigationItem" id="vcT-gu-Khh">
                         <nil key="title"/>
                         <textField key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Search" minimumFontSize="17" id="RGS-NJ-R58">
-                            <rect key="frame" x="77.5" y="7" width="220" height="30"/>
+                            <rect key="frame" x="78" y="7" width="220" height="30"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <nil key="textColor"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>

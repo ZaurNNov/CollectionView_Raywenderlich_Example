@@ -14,8 +14,34 @@ fileprivate var searches = [FlickrSearchResults]()
 fileprivate let flickr = Flickr()
 fileprivate let itemsPerRow: CGFloat = 2
 
+
 class FlickrPhotosViewController: UICollectionViewController {
 
+    fileprivate var largePhotoIndexPath: NSIndexPath? {
+        didSet {
+            var indexPaths = [IndexPath]()
+            if let largePhoto = largePhotoIndexPath {
+                indexPaths.append(largePhoto as IndexPath)
+            }
+            
+            if let old = oldValue {
+                indexPaths.append(old as IndexPath)
+            }
+            
+            collectionView.performBatchUpdates({
+                self.collectionView.reloadItems(at: indexPaths)
+            }) { completed in
+                
+                if let largePhotoIndex = self.largePhotoIndexPath {
+                    self.collectionView.scrollToItem(
+                        at: largePhotoIndex as IndexPath,
+                        at: .centeredVertically,
+                        animated: true)
+                }
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -60,7 +86,6 @@ extension FlickrPhotosViewController : UITextFieldDelegate {
     }
 }
 
-
 // MARK: - UICollectionViewDataSource
 extension FlickrPhotosViewController {
     
@@ -76,7 +101,34 @@ extension FlickrPhotosViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FlickrPhotoCell
         cell.backgroundColor = UIColor.darkGray
         let flickrPhoto = photoForIndexPath(indexPath: indexPath)
+        cell.activityIndicator.stopAnimating()
+        
+        guard (indexPath as NSIndexPath) == largePhotoIndexPath else {
+            cell.imageView.image = flickrPhoto.thumbnail
+            return cell
+        }
+        
+        guard flickrPhoto.largeImage == nil else {
+            cell.imageView.image = flickrPhoto.largeImage
+            return cell
+        }
+        
         cell.imageView.image = flickrPhoto.thumbnail
+        cell.activityIndicator.startAnimating()
+        
+        flickrPhoto.loadLargeImage { loaded, error in
+            
+            cell.activityIndicator.stopAnimating()
+            
+            guard loaded.largeImage != nil && error == nil else {
+                return
+            }
+            
+            if let cell = collectionView.cellForItem(at: indexPath) as? FlickrPhotoCell,
+                (indexPath as NSIndexPath) == self.largePhotoIndexPath {
+                cell.imageView.image = loaded.largeImage
+            }
+        }
         return cell
     }
     
@@ -92,12 +144,27 @@ extension FlickrPhotosViewController {
         }
     }
     
+    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        
+        largePhotoIndexPath = largePhotoIndexPath == (indexPath as NSIndexPath) ? nil : indexPath as NSIndexPath
+        return false
+    }
+    
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension FlickrPhotosViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        if (indexPath as NSIndexPath) == largePhotoIndexPath {
+            let flickrPhoto = photoForIndexPath(indexPath: indexPath)
+            var size = collectionView.bounds.size
+            size.height -= topLayoutGuide.length
+            size.height -= (sectionInsets.top + sectionInsets.right)
+            size.width -= (sectionInsets.left + sectionInsets.right)
+            return flickrPhoto.sizeToFillWidthOfSize(size)
+        }
         
         let paddingSpase = sectionInsets.left * (itemsPerRow + 1)
         let availableWith = view.frame.width - paddingSpase
@@ -114,9 +181,3 @@ extension FlickrPhotosViewController: UICollectionViewDelegateFlowLayout {
         return sectionInsets.left
     }
 }
-
-// MARK: UICollectionViewDelegate
-extension FlickrPhotosViewController {
-    
-}
-
