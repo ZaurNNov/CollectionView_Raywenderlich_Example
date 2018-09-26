@@ -34,6 +34,14 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>I need you photo library</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>I need you media library</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>I need you photo library</string>
+	<key>NSCameraUsageDescription</key>
+	<string>I need you camera</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -13,11 +13,46 @@ fileprivate let sectionInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 20.0
 fileprivate var searches = [FlickrSearchResults]()
 fileprivate let flickr = Flickr()
 fileprivate let itemsPerRow: CGFloat = 2
-
+fileprivate var selectedPhotos = [FlickrPhoto]()
+fileprivate let shareTextLabel = UILabel()
 
 class FlickrPhotosViewController: UICollectionViewController {
 
-    fileprivate var largePhotoIndexPath: NSIndexPath? {
+    @IBAction func shareAction(_ sender: UIBarButtonItem) {
+        
+        guard !searches.isEmpty else {
+            return
+        }
+        
+        guard !selectedPhotos.isEmpty else {
+            sharing = !sharing
+            return
+        }
+        
+        guard sharing else {
+            return
+        }
+        
+        var imageAray = [UIImage]()
+        for selected in selectedPhotos {
+            if let thumbnail = selected.thumbnail {
+                imageAray.append(thumbnail)
+            }
+        }
+        
+        if !imageAray.isEmpty {
+            let shareScreen = UIActivityViewController(activityItems: imageAray, applicationActivities: nil)
+            let popoverPresentationController = shareScreen.popoverPresentationController
+            popoverPresentationController?.barButtonItem = sender
+            popoverPresentationController?.permittedArrowDirections = .any
+            present(shareScreen, animated: true) {
+                self.sharing = false
+            }
+        }
+        
+    }
+    
+    fileprivate var largePhotoIndexPath: IndexPath? {
         didSet {
             var indexPaths = [IndexPath]()
             if let largePhoto = largePhotoIndexPath {
@@ -40,6 +75,37 @@ class FlickrPhotosViewController: UICollectionViewController {
                 }
             }
         }
+    }
+    
+    var sharing: Bool = false {
+        didSet {
+            collectionView.allowsMultipleSelection = sharing
+            collectionView.selectItem(at: nil, animated: true, scrollPosition: UICollectionView.ScrollPosition())
+            selectedPhotos.removeAll(keepingCapacity: false)
+            
+            guard let shareButton = self.navigationItem.rightBarButtonItems?.first else {
+                return
+            }
+            
+            guard sharing else {
+                navigationItem.setRightBarButtonItems([shareButton], animated: true)
+                return
+            }
+            
+            if let _ = largePhotoIndexPath {
+                largePhotoIndexPath = nil
+            }
+            
+            updateSharedPhotoCount()
+            let shareDetailItem = UIBarButtonItem(customView: shareTextLabel)
+            navigationItem.setRightBarButtonItems([shareButton, shareDetailItem], animated: true)
+        }
+    }
+    
+    func updateSharedPhotoCount() {
+        shareTextLabel.text = "\(selectedPhotos.count) photos selected"
+        shareTextLabel.textColor = themeColor
+        shareTextLabel.sizeToFit()
     }
     
     override func viewDidLoad() {
@@ -103,7 +169,7 @@ extension FlickrPhotosViewController {
         let flickrPhoto = photoForIndexPath(indexPath: indexPath)
         cell.activityIndicator.stopAnimating()
         
-        guard (indexPath as NSIndexPath) == largePhotoIndexPath else {
+        guard indexPath == largePhotoIndexPath else {
             cell.imageView.image = flickrPhoto.thumbnail
             return cell
         }
@@ -125,11 +191,20 @@ extension FlickrPhotosViewController {
             }
             
             if let cell = collectionView.cellForItem(at: indexPath) as? FlickrPhotoCell,
-                (indexPath as NSIndexPath) == self.largePhotoIndexPath {
+                indexPath == self.largePhotoIndexPath {
                 cell.imageView.image = loaded.largeImage
             }
         }
         return cell
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        var sourceResults = searches[(sourceIndexPath as NSIndexPath).section].searchResults
+        let flickrPhoto = sourceResults.remove(at: (sourceIndexPath as NSIndexPath).row)
+        
+        var destinationResults = searches[(destinationIndexPath as NSIndexPath).section].searchResults
+        destinationResults.insert(flickrPhoto, at: (destinationIndexPath as NSIndexPath).row)
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -146,8 +221,33 @@ extension FlickrPhotosViewController {
     
     override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         
-        largePhotoIndexPath = largePhotoIndexPath == (indexPath as NSIndexPath) ? nil : indexPath as NSIndexPath
+        guard !sharing else {
+            return true
+        }
+        
+        largePhotoIndexPath = largePhotoIndexPath == indexPath ? nil : indexPath
         return false
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard sharing else {
+            return
+        }
+        
+        let photo = photoForIndexPath(indexPath: indexPath)
+        selectedPhotos.append(photo)
+        updateSharedPhotoCount()
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        guard sharing else {
+            return
+        }
+        
+        let photo = photoForIndexPath(indexPath: indexPath)
+        if let index = selectedPhotos.index(of: photo) {
+            selectedPhotos.remove(at: index)
+        }
     }
     
 }
@@ -157,7 +257,7 @@ extension FlickrPhotosViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        if (indexPath as NSIndexPath) == largePhotoIndexPath {
+        if indexPath == largePhotoIndexPath {
             let flickrPhoto = photoForIndexPath(indexPath: indexPath)
             var size = collectionView.bounds.size
             size.height -= topLayoutGuide.length
